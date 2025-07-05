@@ -15,14 +15,17 @@
         body .main-container form input:focus{border: 1px solid rgb(83, 83, 212);}
         body .main-container form button{ padding: 10px 12px;border-radius: 13px; background: rgb(139, 235, 139);cursor: pointer;}
         body .main-container table tr td{ padding: 10px 12px;}
+        body .main-container .sucessId .copy-btn{ border: 1px solid rgba(0,0,0,0.3); padding: 5px; margin-left: 10px; border-radius: 4px; cursor: pointer;}
+        body .main-container .sucessId .copy-btn.copied{ border-color: green;color: green; cursor: copy;transition: all 0.4s linear;}
+        body .main-container .sucessId .shortUrl.copied{ background-color: gray; transition: color 0.2s ease-in-out;}
     </style>
 </head>
 <body>
     <section class="main-container">
         <h1>URL-Sortner</h1>
-        <% if (locals.id) { %> 
+        <% if (locals.shortUrl) { %>
             <div class="sucessId">
-                <h6>Your Short Url is http://localhost:8001/url/<%= id %></h6>
+                <h5>Your Short Url is <strong id="shortUrl"><%= shortUrl %></strong> <span class="copy-btn" id="copy-btn">Copy</span></h5>
             </div>
         <% } %>
         <div class="form-wrapper">
@@ -33,9 +36,9 @@
             </form>
         </div>
     </section>
+    <% if (locals.urls) { %>
     <section class="main-container">
-        <% if (locals.urls) { %>
-         <table border="1" style="border-collapse: collapse;">
+        <table border="1" style="border-collapse: collapse;">
             <thead>
                 <tr>
                     <td>S. No.</td>
@@ -54,8 +57,26 @@
                     </tr>
                 <% }) %>
             </tbody>
-         </table>
-        <% } %>
+        </table>
     </section>
+    <% } %>
+    <script>
+        const cButton = document.getElementById('copy-btn');
+        const urlText = document.getElementById('shortUrl').textContent;
+    
+        cButton.addEventListener('click', function () {
+            navigator.clipboard.writeText(urlText).then(() => {
+                cButton.classList.add('copied');
+                urlText.classList.add('copied');
+    
+                setTimeout(() => {
+                    cButton.classList.remove('copied');
+                    urlText.classList.remove('copied');
+                }, 4000);
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+        });
+    </script>    
 </body>
 </html>

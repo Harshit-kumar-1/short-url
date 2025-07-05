@@ -2,27 +2,28 @@ const URL = require('../models/url');
 const shortId = require('shortid');
 
 async function handleGenrateNewShortUrl(req, res) {
-    const body = req.body;
-    let redirectUrl;
-    const shortid = shortId.generate(8);
+  const body = req.body;
+  let redirectUrl;
+  const shortid = shortId.generate(8);
 
-    if (!body.redirectUrl) {
-        return res.status(400).json({ msg: "Redirect Url Required" });
+  if (!body.redirectUrl) {
+    return res.status(400).json({ msg: "Redirect Url Required" });
+  } else {
+    const bodyUrl = body.redirectUrl;
+    if (bodyUrl.includes("http://") || bodyUrl.includes("https://")) {
+      redirectUrl = bodyUrl;
     } else {
-        const bodyUrl = body.redirectUrl;
-        if (bodyUrl.includes('http://') || bodyUrl.includes('https://')) {
-            redirectUrl = bodyUrl;
-        } else {
-            redirectUrl = `https://${bodyUrl}`;
-        }
+      redirectUrl = `https://${bodyUrl}`;
     }
+  }
 
-    const result = await URL.create({
-        shortId: shortid,
-        redirectUrl: redirectUrl,
-        visitHistory: []
-    });
-    const allUrls = await URL.find({});
+  const result = await URL.create({
+    shortId: shortid,
+    redirectUrl: redirectUrl,
+    visitHistory: [],
+    createdBy: req.user._id,
+  });
+  const allUrls = await URL.find({});
 
     // if (result) return res.status(200).json({ shortId: result.shortId, msg: "Url Inserted..." });
   if (result) return res.render("home", { id: shortid, urls: allUrls });
@@ -30,31 +31,29 @@ async function handleGenrateNewShortUrl(req, res) {
 }
 
 async function handleGetUrl(req, res) {
-    const shortId = req.params.shortId;
+  const shortId = req.params.shortId;
 
-    const entry = await URL.findOneAndUpdate(
-      { shortId },
-      {
-        $push: {
-          visitHistory: { timestamp: Date.now() },
-        },
-      }
-    );
+  const entry = await URL.findOneAndUpdate(
+    { shortId },
+    {
+      $push: {
+        visitHistory: { timestamp: Date.now() },
+      },
+    }
+  );
 
-    return res.redirect(entry.redirectUrl);
+  return res.redirect(entry.redirectUrl);
 }
 
 async function handleUrlAnalitics(req, res) {
-    const shortId = req.params.shortId;
+  const shortId = req.params.shortId;
 
-    const result = await URL.findOne({shortId});
+  const result = await URL.findOne({ shortId });
 
-    return res
-      .status(200)
-      .json({
-        totalClick: result.visitHistory.length,
-        analitics: result.visitHistory,
-      });
+  return res.status(200).json({
+    totalClick: result.visitHistory.length,
+    analitics: result.visitHistory,
+  });
 }
 
 module.exports = {
