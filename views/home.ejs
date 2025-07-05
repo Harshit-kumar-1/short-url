@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL-Shortner</title>
+    <style>
+        *{margin: 0; padding: 0; box-sizing: border-box;}
+        body{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+        body .main-container{max-width: 45em;width: 100%; margin: 50px auto;padding: 30px;border: 1px solid rgba(0,0,0,0.6);border-radius: 16px;box-shadow: 0px 0px 16px rgba(0,0,0,0.3);}
+        body .main-container h1{font-size: 1.5rem;line-height: 24px;margin-bottom: 20px;}
+        body .main-container .sucessId{ padding: 20px; border: 1px solid green; border-radius: 16px;transition:all 0.3s linear; margin-bottom: 20px;}
+        body .main-container form{ display: flex; justify-content: center; align-items: start;flex-direction: column;gap: 10px;}
+        body .main-container form input{border: 1px solid black; padding: 10px 14px; border-radius: 12px;font-size: 0.9rem; font-weight: 600;width: 100%;}
+        body .main-container form input:focus{border: 1px solid rgb(83, 83, 212);}
+        body .main-container form button{ padding: 10px 12px;border-radius: 13px; background: rgb(139, 235, 139);cursor: pointer;}
+        body .main-container table tr td{ padding: 10px 12px;}
+    </style>
+</head>
+<body>
+    <section class="main-container">
+        <h1>URL-Sortner</h1>
+        <% if (locals.id) { %> 
+            <div class="sucessId">
+                <h6>Your Short Url is http://localhost:8001/url/<%= id %></h6>
+            </div>
+        <% } %>
+        <div class="form-wrapper">
+            <form action="/url" method="post">
+                <label for="redirectUrl">Enter Original URL</label>
+                <input type="text" name="redirectUrl" placeholder="http://Example.com" />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </section>
+    <section class="main-container">
+        <% if (locals.urls) { %>
+         <table border="1" style="border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <td>S. No.</td>
+                    <td>ShortId</td>
+                    <td>RedirectUrl</td>
+                    <td>Clicks</td>
+                </tr>
+            </thead>
+            <tbody>
+                <% urls.forEach((url, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= url.shortId  %></td>
+                        <td><%= url.redirectUrl %></td>
+                        <td><%= url.visitHistory.length %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+         </table>
+        <% } %>
+    </section>
+</body>
+</html>
