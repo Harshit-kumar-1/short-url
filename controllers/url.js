@@ -1,5 +1,6 @@
 const URL = require('../models/url');
 const shortId = require('shortid');
+const port = process.env.port;
 
 async function handleGenrateNewShortUrl(req, res) {
     const body = req.body;
@@ -24,8 +25,10 @@ async function handleGenrateNewShortUrl(req, res) {
     });
     const allUrls = await URL.find({});
 
-    // if (result) return res.status(200).json({ shortId: result.shortId, msg: "Url Inserted..." });
-  if (result) return res.render("home", { id: shortid, urls: allUrls });
+  // if (result) return res.status(200).json({ shortId: result.shortId, msg: "Url Inserted..." });
+  const fullUrl = `${req.protocol}://${req.get("host")}/url/${shortid}`;
+  console.log(fullUrl);
+  if (result) return res.render("home", { shortUrl: fullUrl, urls: allUrls });
   else return res.status(400).json({ msg: "Something went wrong...."})
 }
 

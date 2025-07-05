@@ -15,20 +15,22 @@
         body .main-container form input:focus{border: 1px solid rgb(83, 83, 212);}
         body .main-container form button{ padding: 10px 12px;border-radius: 13px; background: rgb(139, 235, 139);cursor: pointer;}
         body .main-container table tr td{ padding: 10px 12px;}
+        body .main-container .sucessId .copy-btn{ border: 1px solid rgba(0,0,0,0.3); padding: 5px; margin-left: 10px; border-radius: 4px;}
+        body .main-container .sucessId .copy-btn.copied{ border-color: green;};
     </style>
 </head>
 <body>
     <section class="main-container">
         <h1>URL-Sortner</h1>
-        <% if (locals.id) { %> 
+        <% if (locals.shortUrl) { %> 
             <div class="sucessId">
-                <h6>Your Short Url is http://localhost:8001/url/<%= id %></h6>
+                <h6>Your Short Url is <span id="shortUrl"><%= shortUrl %></span> <span class="copy-btn" id="copy-btn">Copy</span></h6>
             </div>
         <% } %>
         <div class="form-wrapper">
             <form action="/url" method="post">
                 <label for="redirectUrl">Enter Original URL</label>
-                <input type="text" name="redirectUrl" placeholder="http://Example.com" />
+                <input type="text" name="redirectUrl" id="redirectUrl" placeholder="http://Example.com" />
                 <button type="submit">Submit</button>
             </form>
         </div>
@@ -57,5 +59,21 @@
          </table>
         <% } %>
     </section>
+    <script>
+        const cButton = document.getElementById('copy-btn');
+        const urlText = document.getElementById('shortUrl').textContent;
+    
+        cButton.addEventListener('click', function () {
+            navigator.clipboard.writeText(urlText).then(() => {
+                cButton.classList.add('copied');
+    
+                setTimeout(() => {
+                    cButton.classList.remove('copied');
+                }, 4000);
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+        });
+    </script>    
 </body>
 </html>
