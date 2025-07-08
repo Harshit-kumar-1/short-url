@@ -30,7 +30,7 @@ async function handleUserLogin(req, res) {
     res.cookie("usid", token);
     return res.redirect("/");
   } else {
-    return res.redirect("login", {error: "Invalid User or Password"});
+    return res.render("login", {error: "Invalid User or Password"});
   }
 }
 
