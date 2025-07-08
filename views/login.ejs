@@ -8,12 +8,15 @@
         *{margin: 0; padding: 0; box-sizing: border-box;}
         body{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
         body .main-container{max-width: 20em;width: 100%; margin: 50px auto;padding: 30px;border: 1px solid rgba(0,0,0,0.6);border-radius: 16px;box-shadow: 0px 0px 16px rgba(0,0,0,0.3);}
-        body .main-container h1{font-size: 1.5rem;line-height: 24px;margin-bottom: 20px;text-align: center;}
+        body .main-container h1{font-size: 1.5rem;line-height: 24px;margin-bottom: 20px;text-align: center;text-align: center;}
         body .main-container form{ display: flex; justify-content: center; align-items: start;flex-direction: column;gap: 10px; padding: 5px 0px;width: 100%;}
-        body .main-container form .form-controll{display: flex;justify-content: center;flex-direction: column; align-items:start; gap: 10px;}
+        body .main-container form .invalid{color: red;}
+        body .main-container form .form-controll{display: flex;justify-content: center;flex-direction: column; align-items:start; gap: 10px;width: 100%;}
         body .main-container form input{border: 1px solid black; padding: 10px 14px; border-radius: 12px;font-size: 0.9rem; font-weight: 600;width: 100%;}
         body .main-container form input:focus{border: 1px solid rgb(83, 83, 212);}
-        body .main-container form button{ padding: 10px 12px;border-radius: 13px; background: rgb(139, 235, 139);cursor: pointer;}
+        body .main-container form button{border: 1px solid gray;outline: none; padding: 10px 12px;border-radius: 13px; background: rgb(25, 173, 25);cursor: pointer;color: #fff;}
+        body .main-container form .btn-link {color: #4f9eff;text-decoration: none;}
+        body .main-container form .btn-link:hover {text-decoration: underline;}
     </style>
 </head>
 <body>
@@ -29,6 +32,14 @@
                 <div class="form-controll">
                     <label for="password">Password</label>
                     <input type="password" name="password" id="password" placeholder="sec*******" required/>
+                </div>
+                <% if (locals.error) { %>
+                    <div class="invalid">
+                        <%= locals.error %>
+                    </div>
+                <% } %>
+                <div class="go-signup">
+                    Did't have Account ? <a href="/signup" class="btn-link">Signup</a>
                 </div>
                 <button type="submit">Submit</button>
             </form>
