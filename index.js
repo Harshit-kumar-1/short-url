@@ -36,7 +36,7 @@ app.use(cookieParser());
 
 app.use("/url", restrictLoggedInUserOnly, urlRouter);
 app.use("/user", userRouter);
-app.use("/",checkAuth, staticRouter);
+app.use("/",checkAuth , staticRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

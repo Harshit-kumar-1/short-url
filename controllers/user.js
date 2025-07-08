@@ -1,21 +1,22 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
-const { v4: uuidv4 } = require("uuid");
-const { setUser, getUser } = require("../service/auth");
+const { setUser } = require("../service/auth");
 
 async function handleUserSignup(req, res) {
   const { fullName, email, password } = req.body;
 
-  const result = await User.create({
+  const user = await User.create({
     fullName: fullName,
     email: email,
     password: password,
   });
 
-  if (!result) {
+  if (!user) {
     return res.render("login");
-  } else if (result) {
-    return res.render("home");
+  } else if (user) {
+    const token = setUser(user);
+    res.cookie('usid', token);
+    return res.redirect("/");
   } else {
     return res.render("error");
   }
@@ -23,16 +24,13 @@ async function handleUserSignup(req, res) {
 
 async function handleUserLogin(req, res) {
   const { email, password } = req.body;
-
   const user = await User.findOne({ email, password });
-
-    if (user) {
-    const sessionId = uuidv4();
-    setUser(sessionId, user);
-    res.cookie("usid", sessionId);
-    return res.render("home");
+  if (user) {
+    const token = setUser(user);
+    res.cookie("usid", token);
+    return res.redirect("/");
   } else {
-    return res.render("login");
+    return res.redirect("login", {error: "Invalid User or Password"});
   }
 }
 
