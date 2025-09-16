@@ -9,13 +9,14 @@ async function handleUserSignup(req, res) {
     fullName: fullName,
     email: email,
     password: password,
+    role: "USER",
   });
 
   if (!user) {
     return res.render("login");
   } else if (user) {
     const token = setUser(user);
-    res.cookie('usid', token);
+    res.cookie("usid", token);
     return res.redirect("/");
   } else {
     return res.render("error");
@@ -27,10 +28,10 @@ async function handleUserLogin(req, res) {
   const user = await User.findOne({ email, password });
   if (user) {
     const token = setUser(user);
-    res.cookie("usid", token);
+    res.cookie("token", token);
     return res.redirect("/");
   } else {
-    return res.render("login", {error: "Invalid User or Password"});
+    return res.render("login", { error: "Invalid User or Password" });
   }
 }
 

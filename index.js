@@ -10,7 +10,7 @@ const staticRouter = require("./routes/static");
 // const ejs = require('ejs');
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const { restrictLoggedInUserOnly, checkAuth } = require("./middlewares/auth");
+const { checkForAuthentication, restrictTo } = require("./middlewares/auth");
 
 // mongodb connection
 const { connectMongoDB } = require("./connection");
@@ -33,10 +33,11 @@ app.set("views", path.resolve("./views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(checkForAuthentication);
 
-app.use("/url", restrictLoggedInUserOnly, urlRouter);
+app.use("/url", restrictTo(["NORMAL", "ADMIN"]), urlRouter);
 app.use("/user", userRouter);
-app.use("/",checkAuth , staticRouter);
+app.use("/", staticRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
